@@ -16,9 +16,19 @@ class neuron:
 	def update(self):
 		"""Get value from average of connections"""
 		try:
-			self.value = (sum(x.value for x in self.links) + self.value)/(len(self.links)+1)
+			avg = (sum(x.value for x in self.links) + self.value)/(len(self.links)+1)
+			self.value = avg
+			self.degrade()
+			for neuron in self.links:
+				neuron.value = avg;
 		except:
 			pass
+
+	def degrade(self):
+		if self.value > 20:
+			self.value -= 10
+		if self.value < -20:
+			self.value += 10
 
 	def display(self):
 		print("ID:%s Value:%s" % (self.i, self.value))
@@ -28,39 +38,46 @@ class neuron:
 class brain:
 	neurons = []
 	amount  = 1
-	def __init__(self, amount, neurons):
-		self.neurons = neurons
+	def __init__(self, amount):
+		self.neurons = [0] * amount
 		for i in range(amount):
-			self.neurons.append(neuron(i, 0, []))
+		    self.neurons[i] = [0] * amount
 
-	def build(self, amount):
-		temp = []
-		for neuron in self.neurons:
-			if abs(neuron.value) > 50:
-				temp.append(neuron)
 		for i in range(amount):
-			if temp:
-				x = random.choice(temp)
-			else:
-				x = random.choice(self.neurons)
-			if len(x.links) < 25:
-				x.links.append(random.choice(self.neurons))
+			for j in range(amount):
+				self.neurons[i][j] = (neuron([i,j], 0, []))
+
+	def build(self):
+		length = len(self.neurons) -1
+		for x in range(length):
+			for y in range(length):
+				if abs(self.neurons[x][y].value) > 50:
+					self.neurons[x][y].links.append(self.neurons[x+random.randint(-1,1)][y+random.randint(-1,1)])
 
 	def update(self):
-		for neuron in self.neurons:
-			neuron.update()
+		length = len(self.neurons) -1
+		for x in range(length):
+			for y in range(length):
+				self.neurons[x][y].update()
 
 	def display(self):
-		for neuron in self.neurons:
-			neuron.display()
-			time.sleep(0.01)
+		length = len(self.neurons) -1
+		for x in range(length):
+			for y in range(length):
+				self.neurons[x][y].display()
 
 	def displayVals(self):
-		store = ""
-		for neuron in self.neurons:
-			store+=str('{:3d}'.format(neuron.value))
-		print(store)
-
+		length = len(self.neurons) -1
+		print("   "),
+		for x in range(length):
+			print(str('{:3d}'.format(x))),
+		print("")
+		for x in range(length):
+			print(str('{:3d}'.format(x))),
+			for y in range(length):
+				print(str('{:3d}'.format(self.neurons[x][y].value))),
+			print("")
+		print("   ------------------------------------")
 
 	def ping(self, neuron):
 		neuron.value += random.randint(-20, 20)
@@ -69,17 +86,20 @@ class brain:
 		elif neuron.value < -100:
 			neuron.value = -100
 
-	def touch(self, amount):
-		for i in range(amount):
-			self.ping(random.choice(self.neurons))
+	def touch(self):
+		length = len(self.neurons) -1
+		x = random.randint(0,length)
+		y = random.randint(0,length)
+		t = self.neurons[x][y]
+		self.ping(t)
 
 
 if __name__ == "__main__":
-	ai = brain(500000, [])
+	ai = brain(100)
 	while True:
-		# time.sleep(0.05)
-		ai.build(random.randint(1,5))
-		ai.touch(random.randint(10,30))
+		# time.sleep(1)
+		ai.build()
+		ai.touch()
 		ai.update()
 		ai.displayVals()
 		# ai.neurons[20].display()

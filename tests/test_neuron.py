@@ -1,9 +1,10 @@
 from brain.neuron import Neuron, Brain
 
+
 def test_neuron_update():
-    n1 = Neuron(1, 0, [])
-    n2 = Neuron(2, 0, [])
-    n3 = Neuron(3, 0, [])
+    n1 = Neuron()
+    n2 = Neuron()
+    n3 = Neuron()
     n1.links = [n2, n3]
 
     n1.update()
@@ -12,9 +13,9 @@ def test_neuron_update():
 
 
 def test_brain_build():
-    n1 = Neuron(1, 0, [])
-    n2 = Neuron(2, 0, [])
-    n3 = Neuron(3, 0, [])
+    n1 = Neuron()
+    n2 = Neuron()
+    n3 = Neuron()
     the_brain = Brain(0, [n1, n2, n3])
 
     the_brain.build(2)
@@ -25,7 +26,7 @@ def test_brain_build():
 
 
 def test_brain_ping():
-    n1 = Neuron(1, 0, [])
+    n1 = Neuron()
     the_brain = Brain(0, [n1])
 
     the_brain.ping(n1)
@@ -34,7 +35,7 @@ def test_brain_ping():
 
 
 def test_brain_touch():
-    n1 = Neuron(1, 0, [])
+    n1 = Neuron()
     the_brain = Brain(0, [n1])
 
     the_brain.touch(5)

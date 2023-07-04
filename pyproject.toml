@@ -10,6 +10,17 @@ readme = "README.md"
 python = "^3.10"
 
 
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.3.3"
+
+[tool.poetry.scripts]
+brain = "brain.neuron:main"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  ".", "src"
+]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

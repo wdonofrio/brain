@@ -2,7 +2,7 @@
 A script that simulates neurons using simplistic understand of how neurons behave and how energy dissipates.
 
 ## Contributing
-The project has been setup with poetry and pre-commit. 
+The project has been setup with poetry and pre-commit.
 
 ### Setup
 To setup with poetry, simply execute:

@@ -1,43 +1,25 @@
-from brain.neuron import Neuron, Brain
+from brain.neuron import IzhikevichParams, NeuronState, Network, Synapse
 
 
-def test_neuron_update():
-    n1 = Neuron()
-    n2 = Neuron()
-    n3 = Neuron()
-    n1.links = [n2, n3]
+def test_izhikevich_spike_reset():
+    params = IzhikevichParams(a=0.02, b=0.2, c=-65.0, d=8.0)
+    neuron = NeuronState(v=30.0, u=0.0, params=params)
+    network = Network([neuron], [[]], dt_ms=1.0, max_delay_steps=1)
 
-    n1.update()
+    spikes = network.step([0.0])
 
-    assert n1.value == (n2.value + n3.value) / 2
-
-
-def test_brain_build():
-    n1 = Neuron()
-    n2 = Neuron()
-    n3 = Neuron()
-    the_brain = Brain(0, [n1, n2, n3])
-
-    the_brain.build(2)
-
-    assert len(n1.links) <= 25
-    assert len(n2.links) <= 25
-    assert len(n3.links) <= 25
+    assert spikes == [0]
+    assert neuron.v == params.c
+    assert neuron.u >= params.d
 
 
-def test_brain_ping():
-    n1 = Neuron()
-    the_brain = Brain(0, [n1])
+def test_synapse_delay_scheduling():
+    n0 = NeuronState(v=30.0)
+    n1 = NeuronState(v=-65.0)
+    synapses = [[Synapse(target=1, weight=10.0, delay_steps=2)], []]
+    network = Network([n0, n1], synapses, dt_ms=1.0, max_delay_steps=2)
 
-    the_brain.ping(n1)
+    network.step([0.0, 0.0])
 
-    assert -100 <= n1.value <= 100
-
-
-def test_brain_touch():
-    n1 = Neuron()
-    the_brain = Brain(0, [n1])
-
-    the_brain.touch(5)
-
-    assert -100 <= n1.value <= 100
+    scheduled = network._input_ring[1][2]
+    assert scheduled == 10.0

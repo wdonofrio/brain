@@ -1,22 +1,32 @@
-[tool.poetry]
+[project]
 name = "brain"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
-authors = ["William D'Onofrio"]
-license = "MIT"
 readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { text = "MIT" }
+authors = [{ name = "William D'Onofrio" }]
+dependencies = []
 
-[tool.poetry.dependencies]
-python = "^3.10"
+[project.optional-dependencies]
+dev = [
+  "black>=24.3.0,<25.0.0",
+  "flake8>=6.0.0,<7.0.0",
+  "pre-commit>=3.3.3,<4.0.0",
+  "pyproject-flake8>=6.0.0.post1,<7.0.0",
+  "pytest>=7.0.0,<8.0.0",
+]
 
+[dependency-groups]
+dev = [
+  "black>=24.3.0,<25.0.0",
+  "flake8>=6.0.0,<7.0.0",
+  "pre-commit>=3.3.3,<4.0.0",
+  "pyproject-flake8>=6.0.0.post1,<7.0.0",
+  "pytest>=7.0.0,<8.0.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-flake8 = "^6.0.0"
-pre-commit = "^3.3.3"
-black = "^24.3.0"
-pyproject-flake8 = "^6.0.0.post1"
-
-[tool.poetry.scripts]
+[project.scripts]
 brain = "brain.neuron:main"
 
 [tool.flake8]
@@ -25,6 +35,9 @@ max-line-length = 1000
 [tool.pytest.ini_options]
 pythonpath = [".", "src"]
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/brain"]
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
